@@ -1,0 +1,22 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/">Главная</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+        <% if (user) { %>
+            <li><a href="/chat">Чат</a></li>
+        <% } %>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+        <% if (user) { %>
+            <li class="nav-item"><a class="waves-effect waves-light btn z-depth-5" href="/logout">Выйти</a></li>
+        <% } else { %>
+            <li class="nav-item"><a class="waves-effect waves-light btn z-depth-5" href="/login">Войти</a></li>
+        <% } %>
+        </ul>
+        </div>
+    </div>    
+</nav>

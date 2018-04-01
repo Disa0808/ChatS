@@ -1,0 +1,81 @@
+<% layout('./layout/page') -%>
+
+<% block('title', 'Чат') -%>
+
+ <h2>Добро пожаловать, <%= user.get('username') %></h2>
+<div id="room">
+    <ul></ul>
+    <br>
+    <form>
+        <input id="message" autocomplete="off" autofocus class="form-control" placeholder="Сообщение">
+        <button class="waves-effect waves-light btn" type="submit">Отправить</button>
+    </form>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+
+<script>
+    var form = $('#room form');
+    var ul = $('#room ul');
+    var input = $('#room input');
+
+    var socket = io.connect('', {
+        reconnect: false
+    });
+
+    socket
+        .on('message', function(username, message) {
+            printMessage(username + "> " + message);
+        })
+        .on('leave', function(username) {
+            printStatus(username + " вышел из чата");
+        })
+        .on('join', function(username) {
+            printStatus(username + "вошел в чат")
+        })
+        .on('connect', function() {
+            printStatus("Соединение установлено");
+            form.on('submit', sendMessage);
+            input.prop('disabled', false);
+        })
+        .on('disconnect', function() {
+            printStatus("Соединение потеряно");
+            form.off('submit', sendMessage);
+            input.prop('disabled', true);
+        })
+        // .on('error', function(reason) {
+        //     if (reason == "handshake unauthorized") {
+        //         printStatus("вы вышли из сайта");
+        //     } else {
+        //         setTimeout(function() {
+        //             socket.socket.connect();
+        //         }, 500);
+        //     }
+        // })
+        ;
+
+    function sendMessage() {
+        var text = input.val();
+        socket.emit('message', text, function() {
+            printMessage(text);
+        });
+        input.val('');
+        return false;
+    }
+
+    function reconnect() {
+        socket.once('error', function() {
+            setTimeout(reconnect, 500);
+        });
+        socket.socket.connect();
+    };
+
+    function printStatus(status) {
+        $('<li>', {text: status}).appendTo(ul);
+    }
+
+    function printMessage(message) {
+        $('<li>', {text: message}).appendTo(ul);
+    }
+
+
+</script>

@@ -1,0 +1,68 @@
+<% layout('./layout/page') -%>
+
+<% block('title', 'Login page') -%>
+
+<div class="container pt-5">
+    <h2 class="header">
+        Log In
+    </h2>
+
+    <form name="login-form">
+        <div class="row">
+                <div class="col s12">
+                    <div class="row">
+                        <div class="input-field col s12">
+                        <input type="text" id="input-username" name="username" class="validate">
+                        <label for="input-username">Имя</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input type="password" id="input-password" name="password" class="validate">
+                        <label for="input-password">Пароль</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-10">
+                <button type="submit" class="waves-effect waves-light btn z-depth-5">Войти <i class="material-icons right">send</i></button>
+                <span class="help-block error"></span>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+<script>
+    $(document.forms['login-form']).on('submit', function() {
+        var form = $(this);
+
+        $('.error', form).html('');
+        $.ajax({
+            url: '/login',
+            method: 'POST',
+            data: form.serialize(),
+            complete: function() {
+                $(':submit', form).button("reset");
+            },
+            statusCode: {
+                200: function() {
+                    form.html("You logged in").addClass('alert-success');
+                    window.location.href = '/chat';
+                },
+                403: function(jqXHR) {
+                    var error = JSON.parse(jqXHR.responseText);
+                    $('.error', form).html(error.message);
+                }
+            }
+        });
+        return false;
+    });
+</script>
+
