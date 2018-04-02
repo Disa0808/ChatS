@@ -22,15 +22,16 @@
         reconnect: false
     });
 
+
     socket
-        .on('message', function(username, message) {
-            printMessage(username + "> " + message);
+        .on('message', function( message) {
+            printMessage(message);
         })
         .on('leave', function(username) {
             printStatus(username + " вышел из чата");
         })
         .on('join', function(username) {
-            printStatus(username + "вошел в чат")
+            printStatus(username + " вошел в чат")
         })
         .on('connect', function() {
             printStatus("Соединение установлено");
@@ -76,6 +77,4 @@
     function printMessage(message) {
         $('<li>', {text: message}).appendTo(ul);
     }
-
-
 </script>
