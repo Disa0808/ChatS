@@ -83,10 +83,30 @@ module.exports = function(server){
     });
 
     io.sockets.on('sessreload', function(sid) {
-        io.clients((error, clients) => {
-            if (error) throw error;
-            console.log(clients);
-          });
+
+        var connectedUsers = Object.keys(io.sockets.connected).map(function(socketId) {
+            return io.sockets.connected[socketId];
+        });
+
+        connectedUsers.forEach(user => {
+            if (user.handshake.session.id != sid) return;
+
+            loadSession(sid, function(err, session) {
+                if (err) {
+                    user.emit("error", "server error");
+                    user.disconnect();
+                    return;
+                }
+
+                if (!session) {
+                    user.emit("logout", "handshake unauthorized");
+                    user.disconnect();
+                    return;
+                }
+
+                user.handshake.session = session;
+            });
+        });
     });
     
 

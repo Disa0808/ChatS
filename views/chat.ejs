@@ -42,16 +42,20 @@
             printStatus("Соединение потеряно");
             form.off('submit', sendMessage);
             input.prop('disabled', true);
+            this._events.error();
         })
-        // .on('error', function(reason) {
-        //     if (reason == "handshake unauthorized") {
-        //         printStatus("вы вышли из сайта");
-        //     } else {
-        //         setTimeout(function() {
-        //             socket.socket.connect();
-        //         }, 500);
-        //     }
-        // })
+        .on('logout', function() {
+            location.href = "/";
+        })
+        .on('error', function(reason) {
+            if (reason == "handshake unauthorized") {
+                printStatus("вы вышли из сайта");
+            } else {
+                setTimeout(function() {
+                    socket.socket.connect();
+                }, 500);
+            }
+        })
         ;
 
     function sendMessage() {
