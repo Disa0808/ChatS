@@ -82,9 +82,16 @@ module.exports = function(server){
         })
     });
 
+    io.sockets.on('sessreload', function(sid) {
+        io.clients((error, clients) => {
+            if (error) throw error;
+            console.log(clients); // => [6em3d4TJP8Et9EMNAAAA, G5p55dHhGgUnLUctAAAB]
+          });
+    });
+    
+
 
     io.sockets.on('connection', function(socket) {
-
         var username = socket.handshake.user.get('username');     
 
         socket.broadcast.emit('join', username);
