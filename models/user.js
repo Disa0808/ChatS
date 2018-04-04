@@ -29,7 +29,7 @@ schema.methods.encryptPassword = function(password){
 }
 
 schema.methods.checkPassword = function(password) {
-    return this.encryptPassword(password) === thi.hashedPassword;
+    return this.encryptPassword(password) === this.hashedPassword;
 };
 
 schema.virtual('password')
@@ -71,8 +71,6 @@ module.exports.User = mongoose.model('User', schema);
 function AuthError(message) {
     Error.apply(this, arguments);
     Error.captureStackTrace(this, AuthError);
-
-    this.status = status;
     this.message = message;
 }
 
